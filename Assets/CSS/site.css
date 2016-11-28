@@ -1,0 +1,156 @@
+
+
+#login-dp{
+    min-width: 400px;
+    padding: 14px 14px 0;
+    overflow:hidden;
+    background-color:rgba(255,255,255,.8);
+}
+.content{
+	width: 80%;
+	margin: 0 auto;
+	margin-top: 50px;
+}
+
+.typeahead-devs, .tt-hint {
+    border-radius: 8px 8px 8px 8px;
+    height: 100%;
+    line-height: 30px;
+    outline: medium none;
+    padding: 8px 12px;
+    width: 100%;
+}
+
+.tt-dropdown-menu {
+  max-width:200px;
+  margin-top: 5px;
+  padding: 8px 12px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px 8px 8px 8px;
+  font-size: 18px;
+  color: #111;
+  background-color: #F1F1F1;
+}
+tfoot {
+	display: table-header-group;
+	background:#337AB7
+}
+tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+}
+
+.width_100Per{
+	width: 100%;
+}
+
+h1{
+font-size: 20px;
+color: #111;
+}
+
+.left-inner-addon {
+    position: relative;
+}
+.left-inner-addon input {
+    padding-left: 30px;    
+}
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+
+.right-inner-addon {
+    position: relative;
+}
+/*.right-inner-addon input {
+    padding-right: 30px;    
+}
+*/.right-inner-addon i {
+    position: absolute;
+    right: 0px;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+
+.list-group-item:hover {
+    background-color: #F1F1F1;
+    cursor:pointer
+}
+
+.resSuggDiv{
+	max-height: 300px;
+	overflow-y:auto;
+}
+
+.text_center_overflow td{
+	text-align:center;
+	text-overflow : ellipsis;
+}
+
+#cover {
+    background: url("ajax-loader.gif") no-repeat scroll center center #FFF;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    opacity: 0.6;
+    z-index: 1
+}
+
+ /*this one is for having a decent header color */
+.bootstrap_headerColor {
+	    background: #337AB7;
+    color: white;
+}
+#RecruitedStuTable tbody{
+	cursor : pointer;
+}
+
+#RecruitedStuTable tbody tr td{
+	text-align: left;
+	padding-left: 0.5%;
+}
+
+.modal-header{	
+	background: #337AB7;
+    color: white;
+}
+
+#successModal .modal-header{
+	background: #5CB85C;
+    color: white;
+    z-index: 1100 !important;
+}
+
+#errorModal .modal-header{
+	background: #D9534F;
+    color: white;
+    z-index: 1100 !important;
+}
+
+.appointmentToAdd select{
+	width: 105%;
+	padding: 6px 6px;
+}
+
+#RecruitedStuTable tbody .form-control {
+	width: 105%;
+	padding: 6px 6px;
+}
+
+table.dataTable tfoot th{
+	padding: 10px 18px 6px 10px !important;
+}
+
+.width85p{
+	width:85% !important;
+}
+
+.mainTableDiv{
+	width: 95%;
+	margin-left: 3%;
+}
