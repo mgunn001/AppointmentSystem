@@ -137,10 +137,19 @@
     		$QueryUpdate = "UPDATE AdminSemDateSettings SET startdate='".$defStartDate."' , enddate='".$defEndDate ."' where semester='".$curSem."' and year='".$accYear."'";
 			//echo $QueryUpdate;
     		$QueryRes = mysqli_query($conn,$QueryUpdate); //Inserts the value to table Student				
-				if (!$QueryRes) {	
-								
-					echo "Fail";	
-					return;			
+				if (!$QueryRes) {
+					
+					$QueryInsert = "INSERT INTO AdminSemDateSettings(semester, startdate, enddate, year, updatedby) VALUES ('$curSem','$defStartDate','$defEndDate','$accYear',$user_id)";
+					if(mysqli_query($conn,$QueryInsert)){
+				 			echo "insert";
+				 			return ;		  		
+					}
+				    else
+				    {
+				    	echo "Fail";	
+				    	return;   
+				    } 					
+					
 				}			
 				echo "success";
 				return;		

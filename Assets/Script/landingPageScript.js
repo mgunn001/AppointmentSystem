@@ -387,9 +387,81 @@ function start()
         
         
         // for admin setting of the start and end date of the semester
-        $('.semseladmsett').change(function() {
-
+        $('.semseladmsett, .yearseladmsett').change(function() {
+        	console.log("in the change of sem selection for start date and end date");
+        	
+        	var curSelAccYear = $(".yearseladmsett").val();
+        	var curSelAccSem = $(".semseladmsett").val();
+        	$("#startDateAdmSett").removeAttr("max");
+    		$("#startDateAdmSett").removeAttr("min"); 			     
+     		$("#endDateAdmSett").removeAttr("max");
+     		$("#endDateAdmSett").removeAttr("min");
+     		
+        	var defaultStartDate="";
+        	var defaultEndDate="";
+        	if(curSelAccSem == "Fall"){
+        		defaultStartDate= curSelAccYear.split("-")[0]+"-08-02";
+        		defaultEndDate= curSelAccYear.split("-")[0]+"-12-15";
+        		$("#startDateAdmSett").attr("min",curSelAccYear.split("-")[0]+"-08-01");
+        		$("#startDateAdmSett").attr("max",curSelAccYear.split("-")[0]+"-12-30");    
+         		$("#endDateAdmSett").attr("min",curSelAccYear.split("-")[0]+"-08-01");
+         		$("#endDateAdmSett").attr("max",curSelAccYear.split("-")[0]+"-12-30"); 
+         		
+        	}else if(curSelAccSem == "Spring"){
+        		defaultStartDate=  curSelAccYear.split("-")[1]+"-01-02";
+        		defaultEndDate= curSelAccYear.split("-")[1]+"-04-15";
+        		$("#startDateAdmSett").attr("min",curSelAccYear.split("-")[1]+"-01-01");
+        		$("#startDateAdmSett").attr("max",curSelAccYear.split("-")[1]+"-04-30");    
+         		$("#endDateAdmSett").attr("min",curSelAccYear.split("-")[1]+"-01-01");
+         		$("#endDateAdmSett").attr("max",curSelAccYear.split("-")[1]+"-04-30"); 
+        	}else{
+        		defaultStartDate= curSelAccYear.split("-")[1]+"-05-02";
+        		defaultEndDate= curSelAccYear.split("-")[1]+"-07-15";
+        		$("#startDateAdmSett").attr("min",curSelAccYear.split("-")[1]+"-05-01");
+        		$("#startDateAdmSett").attr("max",curSelAccYear.split("-")[1]+"-07-30");    
+         		$("#endDateAdmSett").attr("min",curSelAccYear.split("-")[1]+"-05-01");
+         		$("#endDateAdmSett").attr("max",curSelAccYear.split("-")[1]+"-07-30"); 
+        	}
+        		
+	     		
+        	$.ajax({
+  	          type: "GET",
+  	          url: "/"+SERVERHOST+"_StudentAppointmentSystem/updateSettingsAdmin.php?action=6&sem="+curSelAccSem+"&accyear="+curSelAccYear+"&defStartDate="+defaultStartDate+"&defEndDate="+defaultEndDate,
+  	          dataType: "text",
+  	          success: function( data, textStatus, jqXHR) {			  			
+  			 	if($.trim(data).split("|")[0] == "Success"){
+  			 		if($.trim(data).split("|")[1] == "definsert"){
+  			     		$("#startDateAdmSett").val(defaultStartDate);     			     		
+  			     		$("#endDateAdmSett").val(defaultEndDate);
+  			 		}else{
+  			 			$("#startDateAdmSett").val($.trim(data).split("|")[1]);
+  			 			//defaultStartDate = $.trim(data).split("|")[1];
+  			 			$("#endDateAdmSett").val($.trim(data).split("|")[2]);	
+  			 			//defaultEndDate = $.trim(data).split("|")[2];
+  			 		}
+  			 		
+  			 	}else{
+  			 		var errMsg = "some problem while getting the start and end dates of the semester details";
+  		         	errorPopUp(errMsg);
+  			 	}
+  	          },
+  			  error: function( data, textStatus, jqXHR) {
+  	        	$('#cover').hide();
+  		      	//alert("error: some problem while getting the project details");
+  	         	var errMsg = "some problem while getting the start and end dates of the semester details";
+  	         	errorPopUp(errMsg);	 
+  		      }
+        	}); 
+    	
         });
+        
+       /* $(".yearseladmsett").change(function(){
+        	console.log("in the change of Year selection for start date and end date");
+        	
+        	
+        	
+        });*/
+        
         
         $("#startDateAdmSett").change(function(){
         	$("#endDateAdmSett").attr("min", $(this).val());
@@ -414,13 +486,13 @@ function start()
 	    	
 	    	$.ajax({
 		          type: "GET",
-		          url: "/"+SERVERHOST+"_StudentAppointmentSystem/updateSettingsAdmin.php?action=7&curStartDate="+currStartDate +"&curEndDate="+currEndDate+"&sem="+$(".semseladmsett").val()+"&accyear="+curAccYear,
+		          url: "/"+SERVERHOST+"_StudentAppointmentSystem/updateSettingsAdmin.php?action=7&curStartDate="+currStartDate +"&curEndDate="+currEndDate+"&sem="+$(".semseladmsett").val()+"&accyear="+$(".yearseladmsett").val(),
 		          dataType: "text",
 		          success: function( data, textStatus, jqXHR) {		
 	    			 $('#cover').hide();
-	    			if( $.trim(data) == "success"){
+	    			if( $.trim(data) == "success" || $.trim(data)== "insert"){
 	    				 var msg = "Semester dates are updates succefully";
-		    			 successPopUpWithRD(msg);
+		    			 successPopUpWithRD(msg);    				
 	    			}else{
 	    				 var errMsg = "some problem while updating Semester dates";
 			        	  errorPopUp(errMsg);

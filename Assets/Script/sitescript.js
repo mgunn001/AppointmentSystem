@@ -847,7 +847,7 @@ function start()
   			defaultEndDate = currentYear+1+"-07-15";
   			defaultSemester= "Summer";
   		  }
-  		  
+	  
 		    var postSelectStr = '<select purpose="Post" class="form-control postIP" name="postIP"><option value="0">select post</option><option value="GRA">GRA</option><option value="SGRA">SGRA</option><option value="GTA">GTA</option><option value="Grader">Grader</option></select>';
   		    var semSelectStr = '<select purpose="Semester" class="form-control semesterIP" name="semesterIP"><option value="0">select semester</option><option value="Spring">Spring</option><option value="Summer">Summer</option><option value="Fall">Fall</option></select>';
   		    var fundingSelStr = '<select purpose="Funding" class="form-control fundingIP" name="fundingIP"><option value="1">ODU</option><option value="2">ODU&Research</option></select>';
@@ -1030,18 +1030,64 @@ function getNextSemAndYear(semyearStr){
 	var curAccYear = $.trim(semyearStr.split("|")[1]);
 	var startYear= parseInt(curAccYear.split("-")[0]);
 	var endYear = parseInt(curAccYear.split("-")[1]);
+	var nextSem="";
 	var semAndYear = "";
+	var nextSemDefSDate="";
+	var nextSemDefEDate="";
+
 	if(curSem.toUpperCase() =="SPRING"){
+		nextSem = "Summer";
+		//semAndYear="Summer|"+curAccYear+"|"+endYear+"-05-01"+"|"+endYear+"-07-15";	
+		nextSemDefSDate = endYear+"-05-01";
+		nextSemDefEDate = endYear+"-07-15";	
+		semAndYear= "Summer|"+curAccYear+"|";
 		
-		semAndYear="Summer|"+curAccYear+"|"+endYear+"-05-01"+"|"+endYear+"-07-15";	
 	}else if(curSem.toUpperCase() == "SUMMER"){
   // for instance -  Fall|2016-2017|2016-08-01|2016-12-15
-		semAndYear="Fall|"+endYear+"-"+(endYear+1)+"|"+endYear+"-08-01"+"|"+endYear+"-12-15";
+		curAccYear = endYear+"-"+(endYear+1);
+		nextSem = "Fall";
+		//semAndYear="Fall|"+curAccYear+"|"+endYear+"-08-01"+"|"+endYear+"-12-15";
+		nextSemDefSDate = endYear+"-08-01";
+		nextSemDefEDate = endYear+"-12-15";	
+		semAndYear="Fall|"+curAccYear+"|";
 	}else{		
 		
-		semAndYear= "Spring|"+curAccYear+"|"+endYear+"-01-01|"+endYear+"-04-15";
+		//semAndYear= "Spring|"+curAccYear+"|"+endYear+"-01-01|"+endYear+"-04-15";
+		nextSem = "Spring";
+		nextSemDefSDate = endYear+"-01-02";
+		nextSemDefEDate = endYear+"-04-15";	
+		semAndYear= "Spring|"+curAccYear+"|";
 	}
-	return semAndYear;
+	// this one is to get the semester Start and End from the DataBase
+	$.ajax({
+          type: "GET",
+          url: "/"+SERVERHOST+"_StudentAppointmentSystem/updateSettingsAdmin.php?action=6&sem="+nextSem+"&accyear="+curAccYear+"&defStartDate="+nextSemDefSDate+"&defEndDate="+nextSemDefEDate,
+          dataType: "text",
+          success: function( data, textStatus, jqXHR) {			  			
+		 	if($.trim(data).split("|")[0] == "Success"){
+		 		if($.trim(data).split("|")[1] == "definsert"){
+
+		 		}else{
+		 			nextSemDefSDate = $.trim(data).split("|")[1];
+		 			nextSemDefEDate = $.trim(data).split("|")[2];	
+		 			$(".reStartDateIP").val(nextSemDefSDate);
+		 			$(".reEndDateIP").val(nextSemDefEDate);
+		 		}
+		 	
+		 	}else{
+		 		var errMsg = "some problem while getting the start and end dates of the semester details";
+	         	errorPopUp(errMsg);
+		 	}
+          },
+		  error: function( data, textStatus, jqXHR) {
+        	$('#cover').hide();
+	      	//alert("error: some problem while getting the project details");
+         	var errMsg = "some problem while getting the start and end dates of the semester details";
+         	errorPopUp(errMsg);	 
+	      }
+  	}); 	
+
+	return semAndYear+ nextSemDefSDate+"|"+nextSemDefEDate;
 }
 
 

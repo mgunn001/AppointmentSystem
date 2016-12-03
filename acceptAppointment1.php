@@ -70,9 +70,9 @@
 	      array_push($ccList,$stuMail);	   	       
 		   if(Send_Mail1($toList,$ccList)){
 			    echo "success";
-		    }else{
+		   }else{
 		    	echo "error";
-		    } 
+		   } 
 	   
     mysqli_close($con);
    	unset($_SESSION["recruitmentId"]);

@@ -186,7 +186,7 @@
 																<div class="form-group">
 															     
 															       <div class="col-sm-5">
-															       		<select class="form-control semseladmsett"><option value="Fall">Fall</option><option value="Spring">Spring</option><option value="Summer">Summer</option></select>
+															       		<select class="form-control semseladmsett" style="width:107%;"><option value="Fall">Fall</option><option value="Spring">Spring</option><option value="Summer">Summer</option></select>
 															       </div>
 															       <div class="col-sm-6">
 															       		<select class="form-control yearseladmsett"></select>
