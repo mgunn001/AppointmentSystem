@@ -4,7 +4,6 @@ require 'Send_Mail.php';
 $uploaddir = 'Assets/Uploads/';
 $uploadfile = $uploaddir . basename($_FILES['filetoUpload']['name']);
 
-
 $result = move_uploaded_file($_FILES['filetoUpload']['tmp_name'], $uploadfile); // for this to work the destination folder must have edit permissions 
 echo $uploadfile;
 if ($result) {   

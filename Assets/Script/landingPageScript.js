@@ -290,8 +290,7 @@ function start()
         
         
         // Student to Accept & upload signed Offer Letter and email it back to Admin and CC Professor, Student
-        $('#offerUpload_Email_LPS').click(function() {
-        	
+        $('#offerUpload_Email_LPS').click(function() {      	
         	if( $("#uploadOfferFile_LPS").val() == ""){
        		 	//alert("please choose the signed Appointment Letter to Accept the Offer.");
        		 	errorPopUp("please choose the signed Appointment Letter to Accept the Offer.");

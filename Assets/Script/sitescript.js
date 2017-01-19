@@ -17,6 +17,7 @@ var SERVERHOST ="Dev";
 var curSemEndDate="";
 var curSemStartDate="";
 var popUpTimeOut = 3000;
+var isExistingAppt = false;
 function errorPopUpWithRD(errMsg){
 	$('#errorModal .modal-body').html("<p>"+errMsg+"</p>");
 	 $('#errorModal').on('hidden.bs.modal', function (e) {
@@ -811,6 +812,12 @@ function start()
    // this event for adding new appointment 
   	$(".addNewAppointmet").on("click",function(){
   		
+  		if(isAdmin){
+  			isExistingAppt = true;
+  		}else{
+  			isExistingAppt = false;
+  		}
+  		
   		// to make any number of appointments to be initiated at once by Faculty -- currently left unimplemented have to revisit this 
   		if(inBTWAddition){
 	  		//alert("Please add one Appointment at a time.");
@@ -874,10 +881,15 @@ function start()
 	      		
 	      		if(isAdmin){
 		      		editableRow+='<td>'+formGroupDiv +'<input type="text" name="staffIP" class="staffIP form-control txt-auto width_100Per" placeholder="Staff Name" required />'+divEnding+'</td>';
-	      		}	      		
-	      		editableRow+='<td>'+formGroupDiv +'<button type="button" " class="submitAppointment btn btn-success pull-right" onclick="addNewAppointment($(this))">Appoint</button>'+divEnding+'</td>';     	
-	      		editableRow+='<td>'+formGroupDiv +'<button type="button" " class="closeAppmntRow btn btn-success pull-left" onclick="closeAppmntRow($(this))">close</button>'+divEnding+'</td></tr>';     	
-
+		      		editableRow+='<td>'+formGroupDiv +'<input type="file" class="signedOfferExistAppt btn btn-primary" title="Choose the signed offer letter" style="width:95%;">'+divEnding+'</td>';     	
+		      		editableRow+='<td>'+formGroupDiv +'<button type="button" title="Import Existing Appointment" class="submitExistAppt btn btn-success pull-right" onclick="addNewAppointment($(this))">Import</button>'+divEnding+'</td>';     	
+		      		editableRow+='<td>'+formGroupDiv +'<button type="button" class="closeAppmntRow btn btn-success pull-left" onclick="closeAppmntRow($(this))">close</button>'+divEnding+'</td></tr>';     	
+	      		}
+	      		else{
+	      			editableRow+='<td>'+formGroupDiv +'<button type="button" class="submitAppointment btn btn-success pull-right" onclick="addNewAppointment($(this))">Appoint</button>'+divEnding+'</td>';     	
+		      		editableRow+='<td>'+formGroupDiv +'<button type="button" class="closeAppmntRow btn btn-success pull-left" onclick="closeAppmntRow($(this))">close</button>'+divEnding+'</td></tr>';     	
+	      		}
+	      
 	      		$("#RecruitedStuTable tbody").append(editableRow);
 	    	    var today = new Date().toISOString().split('T')[0];
 	    	    $(".appointmentToAdd .startDateIP").attr('min', today);
@@ -957,7 +969,7 @@ function start()
 	      	});
 	      	
 	      	
-	      	// type a head of student UIN
+	      	// type a head of student Name
 	    	$( "input#nameIP" ).keyup(function() {
 	      		 curIPunderSugg = $(this);
 	      		 var curRowParent = $(this).parents("tr");
@@ -1017,7 +1029,56 @@ function start()
 		  	    		});    	
 	      		}
 	      	});
-	      		      	
+	      		      
+	    	
+	    	// type a head of FacultyNameN
+	    	$( "input.staffIP" ).keyup(function() {
+	      		 curIPunderSugg = $(this);
+	      		 var curRowParent = $(this).parents("tr");
+	      		$(".resSuggDiv").remove();
+	      		var strVal = $(this).val().trim();
+	      		if(strVal.length >=2){	      		
+	      			$.ajax({
+		  		          type: "GET",		  		        
+		  		          url: "/"+SERVERHOST+"_StudentAppointmentSystem/autoCompleteStaffName.php?searchVal="+strVal,
+		  		          dataType: "text",
+		  		          success: function( data, textStatus, jqXHR) {			      				       				     
+		  				   	var result = $.parseJSON(data);
+		  				   	if(result.length == 0){
+			  				   	if(strVal.length > 3){	
+		  							$('#cover').show();
+		  							successPopUp("No Professor found with this name in the Local DB, Initiating the LDAP Search...");
+		  				   			//alert("No Student found with this name in the Local DB, Initiating the LDAP Search...");
+			  				   		//LDAPSearchByName(strVal);
+		  				   		}		
+		  				   	}else{		  				   	 				   			   		
+		  				   		var listGroupDiv = $("<div class='resSuggDiv'><ul class='list-group'></ul></div>");				   	
+		  				   		var liComp = "";
+		  				   		$.each(result,function(index,value){
+		  				   			liComp += '<li class="list-group-item proffNameSuggList" id="'+value.split("-")[1] +'">'+value.split("-")[0]+'</li>';		  				   		
+		  				   		});
+		  				   		listGroupDiv.find("ul").append(liComp);
+		  				   		$("body").append(listGroupDiv);
+		  				   			listGroupDiv.css( {position:'absolute',
+		  				   			 top:curIPunderSugg.offset().top+31,
+			  				   		  left:curIPunderSugg.offset().left
+		  				   		});
+		  				   		
+		  				   		$(".proffNameSuggList").click(function(){	
+		  				   			curIPunderSugg.val($(this).html());
+		  				   			curIPunderSugg.attr("staffid",$(this).attr("id"));
+		  				   			$(".resSuggDiv").remove();
+		  				   			ajaxGetProjByStaffIDAddExistingApp($(this).attr("id"));
+		  				   		});	
+		  				   	}		  				   	
+		  		          },
+			  			  error: function( data, textStatus, jqXHR) {
+			  		      	//alert("error: some problem!");
+			  		      	errorPopUp("some problem!");
+			  		      }
+		  	    		});    	
+	      		}
+	      	});
 	   });  
 
 	});
@@ -1092,25 +1153,7 @@ function getNextSemAndYear(semyearStr){
 
 
 
-function ajaxGetProjectsByStaffID(staffID){	
-	$.ajax({
-          type: "GET",
-          //url: "/Prod_StudentAppointmentSystem/getAllProjectsByStaff.php?staffId="+staffID,
-          url: "/"+SERVERHOST+"_StudentAppointmentSystem/getAllProjectsByStaff.php?staffId="+staffID,
 
-          dataType: "text",
-          success: function( data, textStatus, jqXHR) {			      				       				     
-		     projDetArray = $.parseJSON(data);
-		   return projDetArray;
-		    
-          },
-          error: function( data, textStatus, jqXHR) {
-        	  
-		    //alert("error: some problem while getting the project details");
-		    errorPopUp("some problem while getting the project details!");
-		 }
-	}); 
-}
 
 //construct the project select box on fly 
 function projSelectHelper(ParentTR,prePost){ 
@@ -1194,6 +1237,7 @@ function addNewAppointment(buttonClicked){
 	 
 	 if(isAdmin){
 		 data["staffIP"]= curRowParent.find(".staffIP").attr("staffid");
+		 data["extAppImpBy"] = loginUID;
 	 }else{
 		 data["staffIP"]= loginUID;
 	 }
@@ -1267,42 +1311,57 @@ function addNewAppointment(buttonClicked){
 	 
 
 
+	 var confirmationStr =""; 
+	 if(isExistingAppt){
+		 
+		if($(".signedOfferExistAppt").val() == ""){
+			errorPopUp("please choose the appointment letter for this existing appointment");		
+			return false;
+		}	
+		 
+		 confirmationStr = " Are you sure to import the existing  appointment for the student "+ data["firstNameIP"]+" "+data["lastNameIP"]+"("+data["uinIP"]+")";
+		 confirmationStr+= " by prof "+ curRowParent.find(".staffIP").val()+" as a "+data["postIP"]+ " for "+data["semesterIP"]+" "+data["yearIP"]+projectConfirmStr+" "+fundingDet+ " and pay him "+data["salaryIP"]+" ?";
+	 }else{
+			confirmationStr = " Are you sure to Appoint the student "+ data["firstNameIP"]+" "+data["lastNameIP"]+"("+data["uinIP"]+")";
+			 confirmationStr+= " as a "+data["postIP"]+ " for "+data["semesterIP"]+" "+data["yearIP"]+projectConfirmStr+" "+fundingDet+ " and pay him "+data["salaryIP"]+" ?";		 
+	 }
+	 
+	 
+	 
 
-	 
-	 
-	 
-	 
-	 
-	 var confirmationStr = " Are you sure to Appoint the student "+ data["firstNameIP"]+" "+data["lastNameIP"]+"("+data["uinIP"]+")";
-	 confirmationStr+= " as a "+data["postIP"]+ " for "+data["semesterIP"]+" "+data["yearIP"]+projectConfirmStr+" "+fundingDet+ " and pay him "+data["salaryIP"]+" ?";
-	 
 	var proceed = confirm(confirmationStr);
 	 
 	 if(!proceed){
 		 return false;
 	 }
 	 $('#cover').show();
+	 if(isExistingAppt){
+		   var fileFormData = new FormData();
+		   fileFormData.append('filetoUpload', $('.signedOfferExistAppt ')[0].files[0]);		 
+		   ajaxAddExistingAppt(data,fileFormData);
+	 }else{
+		 ajaxAddRecruitment(data);
+	 }
+	 // this followiong is commented to change the flow for the import of the existing appointment
 	//$.post('/Prod_StudentAppointmentSystem/addRecruitment.php',data,function (data){
-	$.post('/'+SERVERHOST+'_StudentAppointmentSystem/addRecruitment.php',data,function (data){
+	/*$.post('/'+SERVERHOST+'_StudentAppointmentSystem/addRecruitment.php',data,function (data){
 		$('#cover').hide();
 		if(data.split("-")[0]== "success"){
 			
-			var insertedRecID = data.split("-")[1];
-
-			//going to be Changed due to workflow change - Proff(Initiated) -> Student(Accepted) -> Proff,Admins(Offer Released) -> Student(Signed&Sent-Employed) -> Admin
-			// this code to initiate sending emails (from Proff To Admin) - Before Change Request
-			/*$('#cover').show();
+			var insertedRecID = data.split("-")[1];		
+			// code to send email from proff to Student - On Change Request
+			$('#cover').show();
 			$.ajax({
 		          type: "GET",
-		          url: "/Maheedhar/StudentRecruitmentTS/emailAdmin.php?recid="+insertedRecID,
+		         // url: "/Prod_StudentAppointmentSystem/emailStudent1.php?recid="+insertedRecID,
+		          url: "/"+SERVERHOST+"_StudentAppointmentSystem/emailStudent1.php?recid="+insertedRecID,
 		          dataType: "text",
 		          success: function( data, textStatus, jqXHR) {	
 					$('#cover').hide();
 				     //var jObj = jQuery.parseJSON(data);
 				    // console.log(jObj[0].stu_id); 
 					if($.trim(data) == "success"){
-						//alert("Student Appointment Initiated Successfully");
-						
+						//alert("Student Appointment Initiated Successfully");						
 					     //window.location.href = "http://qav2.cs.odu.edu/Maheedhar/StudentRecruitmentTS/home.php";
 					     successPopUpWithRD("Student Appointment Initiated Successfully");
 					}
@@ -1316,9 +1375,63 @@ function addNewAppointment(buttonClicked){
 	  		      	//alert("error: some problem while sending an email!");
 	  		      	errorPopUp("some problem while sending an email!");
 	  		      }
-	    	});*/   				
-			
-			
+	    	});   
+
+		}else if (data.split("-")[0]== "fail"){
+			$('#cover').hide();
+			if(data.split("-")[1] != "" && data.split("-")[1] != undefined){
+				//alert(data.split("-")[1]);
+				errorPopUp(data.split("-")[1]);
+			}else{
+				//alert("something went wrong");
+				errorPopUp("something went wrong");
+			}
+		}		
+	});*/
+}
+
+function ajaxAddExistingAppt(data,fileFormData){
+	
+	$.post('/'+SERVERHOST+'_StudentAppointmentSystem/addExistingAppointment.php',data,function (data){
+		$('#cover').hide();
+		if($.trim(data).split("-")[0]== "success"){		
+			  successPopUp("Existing student appointment imported successfully, uploading the Appointment Letter Attached...");	
+			  fileFormData.append("appointmentID",$.trim(data).split("-")[1]);
+			  $.ajax({
+                  url: 'uploadExistApmt.php',
+                  type: 'POST',
+                  data: fileFormData,
+                  processData: false,
+                  contentType: false,
+                  success: function(data) {
+            		 $('#cover').hide();
+	                	if($.trim(data) == "success"){	     
+	     				    successPopUpWithRD("Existing Appointment uploaded successfully!");
+	                	}
+						else{
+							errorPopUp("error: some problem while uploading the existing Appointment letter!");
+						}
+                  },
+                  error: function(xhr,error){    
+                	  $('#cover').hide();
+  	    		    errorPopUp("error: some problem while uploading the existing Appointment letter!");
+                  }
+              });
+			  
+		}else if (data.split("-")[0]== "fail"){
+			errorPopUp("Some problem while importing the existing student appointment");
+		}
+	});
+	
+	
+}
+
+
+function ajaxAddRecruitment(data){
+	$.post('/'+SERVERHOST+'_StudentAppointmentSystem/addRecruitment.php',data,function (data){
+		$('#cover').hide();
+		if($.trim(data).split("-")[0]== "success"){		
+			var insertedRecID = data.split("-")[1];
 			// code to send email from proff to Student - On Change Request
 			$('#cover').show();
 			$.ajax({
@@ -1347,10 +1460,6 @@ function addNewAppointment(buttonClicked){
 	  		      }
 	    	});   
 			
-			
-			
-			
-			
 		}else if (data.split("-")[0]== "fail"){
 			$('#cover').hide();
 			if(data.split("-")[1] != "" && data.split("-")[1] != undefined){
@@ -1363,8 +1472,6 @@ function addNewAppointment(buttonClicked){
 		}		
 	});
 }
-
-
 
 function LDAPSearchByUIN (strVal){
 	$.ajax({
@@ -1517,6 +1624,32 @@ function gradLevelFinder( student){
 	}
 	
 }
+function ajaxGetProjByStaffIDAddExistingApp(staffID){	
+	$.ajax({
+          type: "GET",
+          //url: "/Prod_StudentAppointmentSystem/getAllProjectsByStaff.php?staffId="+staffID,
+          url: "/"+SERVERHOST+"_StudentAppointmentSystem/getAllProjectsByStaff.php?staffId="+staffID,
+
+          dataType: "text",
+          success: function( data, textStatus, jqXHR) {			      				       				     		     
+			var projDetArray = $.parseJSON(data);
+			projOptionStr ='<option value="None-0">None</option><option value="createNew-">CreateNew</option>';
+			$.each(projDetArray,function(index,value){
+				var purp = "GRA";
+				if(parseInt(value.split("-")[2])== 1){
+					purp = "SGRA";
+				}
+				projOptionStr+='<option purp="'+purp +'" value="'+value.split("-")[0]+'-'+value.split("-")[1]+'">'+value.split("-")[0] +'</option>'; 	    		
+				$(".projSel").empty().append(projOptionStr);
+			});	
+		},
+          error: function( data, textStatus, jqXHR) {
+        	  
+		    //alert("error: some problem while getting the project details");
+		    errorPopUp("some problem while getting the project details!");
+		 }
+	}); 
+}
 
 function getAllProjectsByStaff($staffId){
 	$('#cover').show();
@@ -1536,8 +1669,7 @@ function getAllProjectsByStaff($staffId){
 				purp = "SGRA";
 			}
 			projOptionStr+='<option purp="'+purp +'" value="'+value.split("-")[0]+'-'+value.split("-")[1]+'">'+value.split("-")[0] +'</option>'; 	    		
-		});		
-	    
+		});	
 	  },
 	 error: function( data, textStatus, jqXHR) {
 		$('#cover').hide();

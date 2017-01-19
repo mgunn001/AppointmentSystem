@@ -1,5 +1,4 @@
 <html>
-
     <head>
     	  <meta name="description" content="Students Appointment System CS ODU">
 		  <meta name="keywords" content="Appointment System,CS,ODU,Norfolk,Students,Tracking,Appointment,Maheedhar,Handson">
@@ -166,14 +165,14 @@
 	            		$userTitle = "Professor";	            		
 	            	}
 	           		echo '<li><a href="#"> Hello '.$userTitle.' <b class="loggedinusername">'.$compName[0]." ".$compName[1].'!</b><span class="loggedInUID hidden">'.$user_id."-".$isAdmin."-".$adminType.'<span></a></li>';            		
-	           		if($isAdmin){	           		
-	           		  echo '<li class="dropdown settingsDD">
+	           		if($isAdmin){	
+						 echo '<li class="dropdown settingsDD">
 				          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Settings</b> <span class="caret"></span></a>
 							<ul id="settings-dp" class="dropdown-menu" style="width:300px;">
 								<li>
 									 <div class="row">
 											<div class="col-md-12">        																 
-														    <form  action="#" class="form-horizontal" style="margin-left:7%;"> <br />
+														    <form  action="#" class="form-horizontal" style="margin-left:7%;"> <br />														    
 														      <div class="form-group">
 															      <label class="control-label col-sm-4" for="currentTution">Tution Per Credit:</label>
 															      <div class="col-sm-4">
@@ -248,6 +247,8 @@
       			<?php	            
 			           if(!$isAdmin){
 			            		echo '<button type="button" class="addNewAppointmet btn btn-primary pull-right" style="margin-bottom: 1%"><i class="icon-plus"></i> Add Appointment</button>';  
+			           }else{
+			           		echo '<button type="button" class="addNewAppointmet btn btn-primary pull-right" title="Add Existing Appointment" style="margin-bottom: 1%"><i class="icon-plus"></i> Add Existing Appt</button>';  	           	
 			           }        					            	
 	           	?>
       		
@@ -326,12 +327,12 @@
 					$recQueryStr="";
 					if($isAdmin){
 						$recQueryStr = "SELECT R.id as rec_id , R.student_id AS stu_id, Stu.firstname as stu_fn, Stu.lastname AS stu_ln,Stu.email as stu_email,Stu.i9expiry as stu_i9expiry,";
-						$recQueryStr.="R.currentpost,R.semester,R.year,R.tutionwaive,R.credithours,R.salarypaid,R.currenttution,R.offerstatus,R.hours,R.startdate,R.enddate,R.isfinanceverified,R.fundingtype,Sta.firstname As sta_fn,Sta.lastname AS sta_ln,Sta.faculty_id as sta_id,R.isreappointed,R.project_id ";
+						$recQueryStr.="R.currentpost,R.semester,R.year,R.tutionwaive,R.credithours,R.salarypaid,R.currenttution,R.offerstatus,R.hours,R.startdate,R.enddate,R.isfinanceverified,R.fundingtype,R.existingAppImportedBy,Sta.firstname As sta_fn,Sta.lastname AS sta_ln,Sta.faculty_id as sta_id,R.isreappointed,R.project_id ";
 						$recQueryStr.="FROM Recruitments R JOIN Student Stu ON R.student_id = Stu.uin ";
 						$recQueryStr.="JOIN Staff Sta ON R.faculty_id = Sta.faculty_id";										
 					}else{
 						$recQueryStr = "SELECT R.id as rec_id , R.student_id AS stu_id, Stu.firstname as stu_fn, Stu.lastname AS stu_ln,Stu.email as stu_email,Stu.i9expiry as stu_i9expiry,";
-						$recQueryStr.="R.currentpost,R.semester,R.year,R.tutionwaive,R.credithours,R.salarypaid,R.currenttution,R.offerstatus,R.hours,R.startdate,R.enddate,R.isfinanceverified,R.fundingtype,Sta.firstname As sta_fn,Sta.lastname AS sta_ln,Sta.faculty_id as sta_id,R.isreappointed,R.project_id ";
+						$recQueryStr.="R.currentpost,R.semester,R.year,R.tutionwaive,R.credithours,R.salarypaid,R.currenttution,R.offerstatus,R.hours,R.startdate,R.enddate,R.isfinanceverified,R.fundingtype,R.existingAppImportedBy,Sta.firstname As sta_fn,Sta.lastname AS sta_ln,Sta.faculty_id as sta_id,R.isreappointed,R.project_id ";
 						$recQueryStr.="FROM Recruitments R JOIN Student Stu ON R.student_id = Stu.uin JOIN Staff Sta ON R.faculty_id = Sta.faculty_id ";
 						$recQueryStr.="and R.faculty_id=".$user_id;						
 					}
@@ -479,7 +480,12 @@
 						if($row['offerstatus'] == "1"){
 							echo"<td class='stuRecDocs'><a href='Assets/Uploads/offerunsigned_".$row['rec_id'].".pdf' target='_blank'><i class='fa fa-file-pdf-o' title='Document released to student' aria-hidden='true'></i></a> </td>";
 						}else if($row['offerstatus'] == "4"){
-							echo"<td class='stuRecDocs'><a href='Assets/Uploads/offerunsigned_".$row['rec_id'].".pdf' target='_blank'><i class='fa fa-file-pdf-o' title='Document released to student' aria-hidden='true'></i></a> &nbsp; <a href='Assets/Uploads/offersigned_".$row['rec_id'].".pdf' target='_blank'><i class='fa fa-file-pdf-o' title='Document Student signed' aria-hidden='true'></i></a> </td>";							
+							if(intval($row['existingAppImportedBy'])!= 0){
+								echo"<td class='stuRecDocs'><a href='Assets/Uploads/offersigned_".$row['rec_id'].".pdf' target='_blank'><i class='fa fa-file-pdf-o' title='Document Student signed' aria-hidden='true'></i></a> </td>";															
+							}else{
+								echo"<td class='stuRecDocs'><a href='Assets/Uploads/offerunsigned_".$row['rec_id'].".pdf' target='_blank'><i class='fa fa-file-pdf-o' title='Document released to student' aria-hidden='true'></i></a> &nbsp; <a href='Assets/Uploads/offersigned_".$row['rec_id'].".pdf' target='_blank'><i class='fa fa-file-pdf-o' title='Document Student signed' aria-hidden='true'></i></a> </td>";						
+							}
+						
 						} else{
 							echo"<td class='stuRecDocs' title='No Docs avaliable'>None</td>";
 						}
