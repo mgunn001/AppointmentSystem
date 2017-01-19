@@ -14,6 +14,7 @@ var curSearchStr="";
 var curColNum="";
 var curAccYear = "";
 var SERVERHOST ="Dev";
+//var SERVERHOST ="Prod";
 var curSemEndDate="";
 var curSemStartDate="";
 var popUpTimeOut = 3000;
@@ -489,7 +490,7 @@ function start()
 	    	if(selectedPost == "GTA" || selectedPost == "Grader"){	    		
 	    		parentRow.find(".reProjSel").val("None-0");
 	    		parentRow.find(".reProjSel").attr("disabled","disabled");
-	    		
+	    		ParentTR.find(".reProjIP").remove();
 	    		 // for the additional requirements of accomadating tution and no of credits
 	    		parentRow.find(".reTutionIP").val("50");
 	    		parentRow.find(".reCreditsIP").val("9");
@@ -529,6 +530,7 @@ function start()
 	    		 
 	    		parentRow.find(".projSel").val("None-0");
 	    		parentRow.find(".projSel").attr("disabled","disabled");
+	    		ParentTR.find(".projIP").remove();
 	    		 // for the additional requirements of accomadating tution and no of credits
 	    		
 	    		parentRow.find(".tutionWaiveIP").val("50");
@@ -554,6 +556,7 @@ function start()
 	    $(document).on("change",".reProjSel",function(){	    	
 	    	if($(this).val().split("-")[0] == "createNew"){	    		
   	    		var reProjIPStr='<input type="text" name="reProjIP" class="reProjIP form-control width_100Per" placeholder="Proj Number" required />';
+  	    		$(this).parent().find(".reProjIP").remove();
   	    		$(this).parent().append(reProjIPStr);
   	    		//$(this).hide();
 	    	}else{
@@ -566,6 +569,7 @@ function start()
 	    $(document).on("change",".projSel",function(){	    	
 	    	if($(this).val().split("-")[0] == "createNew"){	    		
   	    		var projIPStr='<input type="text" name="projIP" class="projIP form-control width_100Per" placeholder="Proj Number" required />';
+  	    		$(this).parent().find(".projIP").remove();
   	    		$(this).parent().append(projIPStr);
   	    		//$(this).hide();
 	    	}else{
@@ -874,8 +878,15 @@ function start()
 	      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="noOfCreditsIP" disabled class="noOfCreditsIP txt-auto form-control width_100Per" placeholder="No.of Credits" required value="'+ defaultNoofCredits +'"/>'+divEnding+'</td>';
 	      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="salaryIP" class="salaryIP form-control txt-auto width_100Per" placeholder="Salary" required value="'+ defaultSal +'"/>'+divEnding+'</td>';
 	      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="hoursIP" class="hoursIP form-control txt-auto width_100Per" placeholder="Hours" required value="'+ 20 +'"/>'+divEnding+'</td>';	    		
-  	    		// to populate all the projects
+  	    		
+	      		 if(isAdmin){
+	      			projOptionStr ='<option value="None-0">Select Faculty first</option><option value="createNew-">Create New</option>';
+		    	  }
+	      		// to populate all the projects
 	    	    var projSelectStr = '<select class="form-control projSel" name="projSel">'+ projOptionStr+'</select>';
+	    	    
+	    	   
+	    	    
 	      		editableRow+='<td>'+formGroupDiv +projSelectStr+divEnding+'</td>';   
 	      		editableRow+='<td>'+formGroupDiv +fundingSelStr+divEnding+'</td>';   
 	      		
@@ -1165,6 +1176,7 @@ function projSelectHelper(ParentTR,prePost){
 		ParentTR.find(".reProjSel").val(preProjName+"-"+preProjId); 
 		if(prePost == "GTA" || prePost == "Grader"){
 			ParentTR.find(".reProjSel").attr("disabled","disabled");
+			ParentTR.find(".reProjIP").remove();
 		}
 }
 
