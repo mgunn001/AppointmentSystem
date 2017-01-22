@@ -154,3 +154,7 @@ table.dataTable tfoot th{
 	width: 95%;
 	margin-left: 3%;
 }
+
+tfoot .form-control{
+	padding: 4px 5px !important;
+}

@@ -175,11 +175,11 @@
 														    <form  action="#" class="form-horizontal" style="margin-left:7%;"> <br />														    
 														      <div class="form-group">
 															      <label class="control-label col-sm-4" for="currentTution">Tution Per Credit:</label>
-															      <div class="col-sm-4">
+															      <div class="col-sm-5">
 															        <input type="number" class="form-control" id="currentTution" placeholder="Enter Tution">
 															      </div>
-															      <div class="col-sm-3">
-															      	<input type="button" class="btn btn-default updateTutionButt" value="Update" style="display:none" />
+															      <div class="col-sm-2" style="margin-left:-9%;">
+															      	<input type="button" class="btn btn-default updateTutionButt" value="Update" style="display:none;" />
 															      </div>
 															   </div>
 																<div class="form-group">
@@ -252,32 +252,38 @@
 			           }        					            	
 	           	?>
       		
-      		<!--<button type="button" class="addNewAppointmet btn btn-primary pull-right" style="margin-bottom: 1%">Add Appointment</button>
-
+      		<!--<button type="button" class="addNewAppointmet btn btn-primary pull-right" style="margin-bottom: 1%">Add Appointment</button> -->
+			
+			<!--	
+				now chaninging the order of the fields from order :				
+				UIN,StudentName, Post, StartDate, EndDate,%T,#cr,$Sal,Hrs,Project(Budjet),Funcding,Faculty,OfferStatus,Offer Docs,Action
+				to Following order : 
+				UIN,StudentName,Post,Faculty,Project(Budjet),Funding, StartDate, EndDate,%T,#cr,$Sal,Hrs,OfferStatus,Offer Docs,Action
+				
 			-->
 			<table id="RecruitedStuTable" class="table display" cellspacing="0">
 	    		<thead>
 		    		<tr> 
 			    		<th title="Student UIN">UIN</th>
 			    		<th>Student Name</th>
-			    		<th>Post</th>
-			    		<th title="Sem Start Date">StartDate</th>
-			    		<th title="Sem End Date">EndDate</th>
-			    		<!--<th title="Semester">Sem</th>
-			    		<th>Year</th> 
-			    		--><th title="Tution Waive%">%T</th>
-			    		<th title="No Of Credits">#Cr</th>
-			    		<th title="Salary Amount $">$Sal</th>
-			    		<th title="No Of Hours">Hrs</th>
-			    		<th>Project</th>
-			    		<th>Funding</th>
 			    		<?php	            
 			            	if($isAdmin){
 			            		echo '<th>Faculty</th>';  
 			            	}        					            	
 	           			?>
-	           			<th>Offer Status</th> 
-	           			<th>Offer Docs</th> 
+			    		<th>Post</th>		    		
+	           			<th title="Budget Code">BCode</th>
+	           			<th>Funding</th>
+			    		<th title="Sem Start Date" style="max-width:146px !important;">StartDate</th>
+			    		<th title="Sem End Date" style="max-width:146px !important;">EndDate</th>
+			    		<!--<th title="Semester">Sem</th>
+			    		<th>Year</th> -->
+			    		<th title="Tution Waive%">%T</th>
+			    		<th title="No Of Credits">#Cr</th>
+			    		<th title="Salary Amount $">$Sal</th>
+			    		<th title="No Of Hours">Hrs</th>			    				
+	           			<th title="Appointment Status">Appmt Status</th> 
+	           			<th title="Appointment Docs">Appmt Docs</th> 
 	           			<?php	            
 			            	if($isAdmin){
 			            		echo '<th>Action</th>';  
@@ -285,31 +291,42 @@
 			            		echo '<th>Re-Appoint</th>';			    
 			            	}   					            	
 	           			?>
-
 		    		</tr>
 	    		</thead>
+	    		
+	    	<!--	
+				now chaninging the order of the fields from order :				
+				UIN,StudentName, Post, StartDate, EndDate,%T,#cr,$Sal,Hrs,Project(Budjet),Funcding,Faculty,OfferStatus,Offer Docs,Action
+				to Following order :
+				 
+				UIN,StudentName,Post,Faculty,Project(Budjet),Funding, StartDate, EndDate,%T,#cr,$Sal,Hrs,OfferStatus,Offer Docs,Action				
+			-->	    		
 	    		<tfoot>
 		           <tr> 
 			    		<th purp='UIN'>UIN</th>
-			    		<th purp='Name'>Name</th>
-			    		<th purp='Post'>Post</th>
-			    		<th purp='SemStartDate'>StartDate</th>
-			    		<th purp='SemEndDate'>EndDate</th>
-			    		<!--<th purp='Semester'>Sem</th>
-			    		<th purp='Year'>Year</th>
-			    		--><th purp='Tution'>%T</th>
-			    		<th purp='NoOfCredits'>#Cr</th>
-			    		<th purp='Salary'>$Sal</th>
-			    		<th purp='Hours'>Hrs</th>
-			    		<th purp='Project'>Project</th>
-			    		<th purp='Funding'>Funding</th>
+			    		<th purp='Name'>Name</th>			    		
 			    		<?php	            
 			            	if($isAdmin){
 			            		echo '<th purp="Staff">Faculty</th>';  
 			            	}        					            	
 	           			?>
+	           			<th purp='Post'>Post</th>
+	           			<th purp='Project'>Budget Code</th>
+	           			<th purp='Funding'>Funding</th>
+	           			
+			    		<th purp='SemStartDate' style="max-width:146px !important;">StartDate</th>
+			    		<th purp='SemEndDate' style="max-width:146px !important;">EndDate</th>
+			    		
+			    		<!--<th purp='Semester'>Sem</th>
+			    		<th purp='Year'>Year</th>-->
+			    		
+			    		<th purp='Tution'>%T</th>
+			    		<th purp='NoOfCredits'>#Cr</th>
+			    		<th purp='Salary'>$Sal</th>
+			    		<th purp='Hours'>Hrs</th>
+			    				    			    		
 	           			<th purp='Offer Status'>Status</th>
-	           			<th purp='Docs'>Offer Docs</th> 
+	           			<th purp='Docs'>Appmt Docs</th> 
 			    		<?php	            
 			            	if($isAdmin){
 			            		echo '<th purp="Action">Action</th>';  
@@ -337,20 +354,74 @@
 						$recQueryStr.="and R.faculty_id=".$user_id;						
 					}
 					echo $queryStr;							
-					$query = mysql_query($recQueryStr);
-								
+					$query = mysql_query($recQueryStr);								
 					//$query = mysql_query("Select * from Recruitments"); //Query the users table
+									
+					/*now chaninging the order of the fields from order :				
+					UIN,StudentName, Post, StartDate, EndDate,%T,#cr,$Sal,Hrs,Project(Budjet),Funcding,Faculty,OfferStatus,Offer Docs,Action
+					to Following order :
+					 
+					UIN,StudentName,Post,Faculty,Project(Budjet),Funding, StartDate, EndDate,%T,#cr,$Sal,Hrs,OfferStatus,Offer Docs,Action		*/		
+				 
+					
 					while($row = mysql_fetch_array($query)) //display all rows from query
 					{
 					 	$projID = $row['project_id'];
 				
-						echo"<tr class='text_center_overflow dataRow' id='".$row['rec_id']."'>";
-						echo"<td class='stuUIN' i9expiry=".$row['stu_i9expiry']." >".$row['stu_id']."</td>";
+						echo"<tr class='text_center_overflow dataRow' id='".$row['rec_id']."'>";						
+						echo"<td class='stuUIN' i9expiry=".$row['stu_i9expiry']." >".$row['stu_id']."</td>";					
 						echo"<td class='stuName' emailid='".$row['stu_email'] ."'>".$row['stu_fn'].",".$row['stu_ln']."</td>";
+						if($isAdmin){
+							echo"<td class='staName' staffid='".$row['sta_id']."'>".$row['sta_fn'].",".$row['sta_ln']."</td>";
+						}
+						
 						//echo"<td class='stuEmail'>".$row['stu_email']."</td>";
 						echo"<td class='stuPost'><span class='oSpan'>".$row['currentpost']."</span></td>";
+						//echo"<td class='stuProj' projId='".$row['proj_id']."'>".$row['proj_name']."</td>";
+						if($projID == ""){
+							echo"<td class='stuProj' projId='0'><span class='oSpan'>None</span></td>";
+						}else{							
+							$projQueryStr="Select * FROM Projects WHERE id=".$projID;		
+							$projQuery = mysql_query($projQueryStr);
+							while($projRow = mysql_fetch_array($projQuery)){
+								echo "<td class='stuProj' projid='".$projRow['id']."'><span class='oSpan'>".$projRow['name']."</span></td>";
+							}							
+						}	
 						
-						//----------------------- this block one is for Displaying Start & End Dates (Change Request)-----------------
+						if(!$isAdmin){							
+	                        if($row['fundingtype'] == "1"){
+	                        	echo"<td class='stuFundingType' title='Funded by ODU Alone'><span class='oSpan' style='color:blue;'>ODU</span></td>";
+	                        }else{
+	                        	echo"<td class='stuFundingType' title='Funded by Both ODU & Research Foundation'><span class='oSpan' style='color:green;'>Both</span></td>";                        	
+	                        }
+						}else{
+							if($row['offerstatus'] == "2"){
+								
+								if($adminType == 1){
+								
+									if($row['fundingtype'] == "1"){
+			                        	echo"<td class='stuFundingType'><select class='form-control adminUpdatedFT'><option value='1' selected>ODU</option><option value='2'>ODU&amp;Research</option></select></td>";
+			                        }else if($row['fundingtype'] == "2"){
+			                        	echo"<td class='stuFundingType'><select class='form-control adminUpdatedFT'><option value='1'>ODU</option><option value='2' selected>ODU&amp;Research</option></select></td>";                        	
+			                        }
+								}else{
+									if($row['fundingtype'] == "1"){
+			                        	echo"<td class='stuFundingType' title='Funded by ODU Alone'><span class='oSpan' style='color:blue;'>ODU</span></td>";
+			                        }else{
+			                        	echo"<td class='stuFundingType' title='Funded by Both ODU & Research Foundation'><span class='oSpan' style='color:green;'>Both</span></td>";                        	
+			                        }
+								}
+		                        
+							}else{
+								if($row['fundingtype'] == "1"){
+		                        	echo"<td class='stuFundingType' title='Funded by ODU Alone'><span class='oSpan' style='color:blue;'>ODU</span></td>";
+		                        }else{
+		                        	echo"<td class='stuFundingType' title='Funded by Both ODU & Research Foundation'><span class='oSpan' style='color:green;'>Both</span></td>";                        	
+		                        }
+							}
+						}
+																		
+						//----------------------- this block one is for Displaying Start & End Dates (Change Request)-----
 						//$startDate =  date('m/d/Y',strtotime($row['startdate']));
 						//$endDate =  date('m/d/Y',strtotime($row['enddate']));
 						
@@ -359,9 +430,7 @@
 						echo"<td class='stuStartDate' title='".$row['semester']." | ".$row['year']."'><span class='oSpan'>".$startDate ."</span></td>";
 						echo"<td class='stuEndDate' title='".$row['semester']." | ".$row['year']."'><span class='oSpan'>". $endDate."</span></td>";
 						
-						//------------------------------------------------------------------------------------------------------------
-						
-						
+						//-------------------------------------------------------------------------------------------------						
 						//-------------- removed because the start date and end date has come into existance --------------
 						//echo"<td class='stuSem'><span class='oSpan'>".$row['semester']."</span></td>";
 						//echo"<td class='stuYear'><span class='oSpan'>".$row['year']."</span></td>";
@@ -403,51 +472,7 @@
 						}
 						
 						echo"<td class='stuWHours'><span class='oSpan'>".$row['hours']."</span></td>";
-						//echo"<td class='stuProj' projId='".$row['proj_id']."'>".$row['proj_name']."</td>";
-						if($projID == ""){
-							echo"<td class='stuProj' projId='0'><span class='oSpan'>None</span></td>";
-						}else{							
-							$projQueryStr="Select * FROM Projects WHERE id=".$projID;		
-							$projQuery = mysql_query($projQueryStr);
-							while($projRow = mysql_fetch_array($projQuery)){
-								echo "<td class='stuProj' projid='".$projRow['id']."'><span class='oSpan'>".$projRow['name']."</span></td>";
-							}							
-						}	
-						if(!$isAdmin){							
-	                        if($row['fundingtype'] == "1"){
-	                        	echo"<td class='stuFundingType' title='Funded by ODU Alone'><span class='oSpan' style='color:blue;'>ODU</span></td>";
-	                        }else{
-	                        	echo"<td class='stuFundingType' title='Funded by Both ODU & Research Foundation'><span class='oSpan' style='color:green;'>Both</span></td>";                        	
-	                        }
-						}else{
-							if($row['offerstatus'] == "2"){
-								
-								if($adminType == 1){
-								
-									if($row['fundingtype'] == "1"){
-			                        	echo"<td class='stuFundingType'><select class='form-control adminUpdatedFT'><option value='1' selected>ODU</option><option value='2'>ODU&amp;Research</option></select></td>";
-			                        }else if($row['fundingtype'] == "2"){
-			                        	echo"<td class='stuFundingType'><select class='form-control adminUpdatedFT'><option value='1'>ODU</option><option value='2' selected>ODU&amp;Research</option></select></td>";                        	
-			                        }
-								}else{
-									if($row['fundingtype'] == "1"){
-			                        	echo"<td class='stuFundingType' title='Funded by ODU Alone'><span class='oSpan' style='color:blue;'>ODU</span></td>";
-			                        }else{
-			                        	echo"<td class='stuFundingType' title='Funded by Both ODU & Research Foundation'><span class='oSpan' style='color:green;'>Both</span></td>";                        	
-			                        }
-								}
-		                        
-							}else{
-								if($row['fundingtype'] == "1"){
-		                        	echo"<td class='stuFundingType' title='Funded by ODU Alone'><span class='oSpan' style='color:blue;'>ODU</span></td>";
-		                        }else{
-		                        	echo"<td class='stuFundingType' title='Funded by Both ODU & Research Foundation'><span class='oSpan' style='color:green;'>Both</span></td>";                        	
-		                        }
-							}
-						}
-						if($isAdmin){
-							echo"<td class='staName' staffid='".$row['sta_id']."'>".$row['sta_fn'].",".$row['sta_ln']."</td>";
-						}
+																
 						$offerStatus = "";
 						$offerStatusTitle = "";
 						$textColor = "";
@@ -517,17 +542,12 @@
 								}							
 							}
 							/*else if($row['offerstatus'] == "2"){ // merged with the above if itself, revisit if something goes wrong
-								echo"<td class='reLeaseOffAdmin'><button type='button' class='releaseOffButtAdm btn btn-warning pull-right'>Release</button></td>";											
-																
+								echo"<td class='reLeaseOffAdmin'><button type='button' class='releaseOffButtAdm btn btn-warning pull-right'>Release</button></td>";													
 							}*/
 							else{
 								echo"<td class='reLeaseOffAdmin'><button type='button' disabled class='releaseOffButtAdm btn btn-warning pull-right'>Release</button></td>";											
 							}
-						}
-						
-						
-						
-						
+						}										
 					}
 	    		?>
 	    		</tbody>

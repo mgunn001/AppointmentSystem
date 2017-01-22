@@ -478,19 +478,22 @@ function start()
 	    	var selectedPost = $(this).val();
 	    	var parentRow = $(this).parents("tr");
 	    	var preProjVal  = $(this).parents("tr").find(".reProjSel").val();
+	    	parentRow.find(".reProjSel").val("None-0");	    	
 	    	if(selectedPost.split("_")[0] == "PHD"){
 	    		if(selectedPost == "PHD_GRA"){
 	    			parentRow.find(".reProjSel option[purp='SGRA']").hide();
+	    			parentRow.find(".reProjSel option[purp='GRA']").show();   
 	    		}else{
 	    			parentRow.find(".reProjSel option[purp='SGRA']").show();
-	    		}
-	    		
+	    			parentRow.find(".reProjSel option[purp='GRA']").hide();   
+	    			
+	    		}    		
 	    		return false;	    		
 	    	}
 	    	if(selectedPost == "GTA" || selectedPost == "Grader"){	    		
-	    		parentRow.find(".reProjSel").val("None-0");
+	    		
 	    		parentRow.find(".reProjSel").attr("disabled","disabled");
-	    		ParentTR.find(".reProjIP").remove();
+	    		parentRow.find(".reProjIP").remove();
 	    		 // for the additional requirements of accomadating tution and no of credits
 	    		parentRow.find(".reTutionIP").val("50");
 	    		parentRow.find(".reCreditsIP").val("9");
@@ -505,8 +508,10 @@ function start()
 	    		
 	    		if(selectedPost == "GRA"){
 	    			parentRow.find(".reProjSel option[purp='SGRA']").hide();
+	    			parentRow.find(".reProjSel option[purp='GRA']").show();
 	    		}else{
 	    			parentRow.find(".reProjSel option[purp='SGRA']").show();
+	    			parentRow.find(".reProjSel option[purp='GRA']").hide();
 	    		}
 	    	}	    
 		});
@@ -516,21 +521,22 @@ function start()
 	    	
 	    	var selectedPost = $(this).val();
 	    	var parentRow = $(this).parents("tr");
+	    	parentRow.find(".projSel").val("None-0");
 	    	if(selectedPost.split("_")[0] == "PHD"){
 	    		if(selectedPost == "PHD_GRA"){
 	    			parentRow.find(".projSel option[purp='SGRA']").hide();
+	    			parentRow.find(".projSel option[purp='GRA']").show();    			
 	    		}else{
 	    			parentRow.find(".projSel option[purp='SGRA']").show();
-	    		}
-	    		
+	    			parentRow.find(".projSel option[purp='GRA']").hide();
+	    		}	    		
 	    		return false;
 	    	}
 	    	
 	    	if(selectedPost == "GTA" || selectedPost == "Grader"){	
-	    		 
-	    		parentRow.find(".projSel").val("None-0");
+	    		    		
 	    		parentRow.find(".projSel").attr("disabled","disabled");
-	    		ParentTR.find(".projIP").remove();
+	    		parentRow.find(".projIP").remove();
 	    		 // for the additional requirements of accomadating tution and no of credits
 	    		
 	    		parentRow.find(".tutionWaiveIP").val("50");
@@ -544,8 +550,10 @@ function start()
 	    		
 	    		if(selectedPost == "GRA"){
 	    			parentRow.find(".projSel option[purp='SGRA']").hide();
+	    			parentRow.find(".projSel option[purp='GRA']").show();
 	    		}else{
 	    			parentRow.find(".projSel option[purp='SGRA']").show();
+	    			parentRow.find(".projSel option[purp='GRA']").hide();
 	    		}
 
 	    	}
@@ -739,7 +747,7 @@ function start()
 		    			reProjId= ParentTR.find(".reProjSel").val().split("-")[1];
 		    			
 		    			if( ParentTR.find(".reProjSel").val().split("-")[1]!= "0"){
-		    				projectConfirmStr = " on a Project "+reProjIp.toUpperCase();
+		    				projectConfirmStr = " on a Budget Code "+reProjIp.toUpperCase();
 		    			}
 		    			
 		    		}
@@ -863,9 +871,28 @@ function start()
   		    var semSelectStr = '<select purpose="Semester" class="form-control semesterIP" name="semesterIP"><option value="0">select semester</option><option value="Spring">Spring</option><option value="Summer">Summer</option><option value="Fall">Fall</option></select>';
   		    var fundingSelStr = '<select purpose="Funding" class="form-control fundingIP" name="fundingIP"><option value="1">ODU</option><option value="2">ODU&Research</option></select>';
 
+  		  /*now chaninging the order of the fields from order :				
+			UIN,StudentName, Post, StartDate, EndDate,%T,#cr,$Sal,Hrs,Project(Budjet),Funcding,Faculty,OfferStatus,Offer Docs,Action
+			to Following order :
+			 
+			UIN,StudentName,Post,Faculty,Project(Budjet),Funding, StartDate, EndDate,%T,#cr,$Sal,Hrs,OfferStatus,Offer Docs,Action*/		
+		 
+  		    
 	      	var editableRow ='<tr class="appointmentToAdd"><td>'+formGroupDiv+'<input type="text" name="uinIP" class="uinIP txt-auto form-control  width_100Per " placeholder="Uin"  required />'+divEnding+'</td>';
 	      		editableRow+='<td>'+formGroupDiv +'<input type="text" name="nameIP" id="nameIP" class="nameIP txt-auto form-control width_100Per" placeholder="Name" required />'+divEnding+'</td>';	      		
+	      		if(isAdmin){
+		      		editableRow+='<td>'+formGroupDiv +'<input type="text" name="staffIP" class="staffIP form-control txt-auto width_100Per" placeholder="Staff Name" required />'+divEnding+'</td>';
+	      		}
+	      		
 	      		editableRow+='<td>'+formGroupDiv+postSelectStr+divEnding+'</td>';
+	      		 if(isAdmin){
+		      			projOptionStr ='<option value="None-0">None</option><option value="createNew-">Create New</option>';
+	      		  }
+		      		// to populate all the projects
+		    	var projSelectStr = '<select class="form-control projSel" name="projSel">'+ projOptionStr+'</select>';
+		      	editableRow+='<td>'+formGroupDiv +projSelectStr+divEnding+'</td>';   	      		
+		      	editableRow+='<td>'+formGroupDiv +fundingSelStr+divEnding+'</td>';   
+	      		
 	      		// the below one is from StartDate and EndDate	      	
 	      		editableRow+='<td>'+formGroupDiv+'<input type="date" name="startDateIP" id="startDateIP" class="startDateIP width85p txt-auto form-control " placeholder="Semester Start Date" title="Semester Start Date"  required /> '+divEnding+'</td>'
 	      		editableRow+='<td>'+formGroupDiv+'<input type="date" name="endDateIP" id="endDateIP" class="endDateIP width85p txt-auto form-control "  placeholder="Semester End date" title="Semester End Date" required /> '+divEnding+'</td>'	      	
@@ -874,24 +901,17 @@ function start()
 	      		//editableRow+='<td>'+formGroupDiv +'<input type="number" name="yearIP" class="yearIP txt-auto form-control width_100Per" placeholder="Year" required value="'+ currentYear +'"/>'+divEnding+'</td>';
 	      		
 	      		//the following two are added for additional requirements of tutuion and no of credit hours
-	      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="tutionWaiveIP" disabled class="tutionWaiveIP txt-auto form-control width_100Per" placeholder="Tution Waive" required value="'+ defaultTutionWaiver +'"/>'+divEnding+'</td>';
-	      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="noOfCreditsIP" disabled class="noOfCreditsIP txt-auto form-control width_100Per" placeholder="No.of Credits" required value="'+ defaultNoofCredits +'"/>'+divEnding+'</td>';
+	      		if(isExistingAppt){
+	      			editableRow+='<td>'+formGroupDiv +'<input type="number" name="tutionWaiveIP" class="tutionWaiveIP txt-auto form-control width_100Per" placeholder="Tution Waive" required value="'+ defaultTutionWaiver +'"/>'+divEnding+'</td>';
+		      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="noOfCreditsIP" class="noOfCreditsIP txt-auto form-control width_100Per" placeholder="No.of Credits" required value="'+ defaultNoofCredits +'"/>'+divEnding+'</td>';	      		
+	      		}else{
+	      			editableRow+='<td>'+formGroupDiv +'<input type="number" name="tutionWaiveIP" disabled class="tutionWaiveIP txt-auto form-control width_100Per" placeholder="Tution Waive" required value="'+ defaultTutionWaiver +'"/>'+divEnding+'</td>';
+		      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="noOfCreditsIP" disabled class="noOfCreditsIP txt-auto form-control width_100Per" placeholder="No.of Credits" required value="'+ defaultNoofCredits +'"/>'+divEnding+'</td>';		      		
+	      		}	      		  		
 	      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="salaryIP" class="salaryIP form-control txt-auto width_100Per" placeholder="Salary" required value="'+ defaultSal +'"/>'+divEnding+'</td>';
 	      		editableRow+='<td>'+formGroupDiv +'<input type="number" name="hoursIP" class="hoursIP form-control txt-auto width_100Per" placeholder="Hours" required value="'+ 20 +'"/>'+divEnding+'</td>';	    		
-  	    		
-	      		 if(isAdmin){
-	      			projOptionStr ='<option value="None-0">Select Faculty first</option><option value="createNew-">Create New</option>';
-		    	  }
-	      		// to populate all the projects
-	    	    var projSelectStr = '<select class="form-control projSel" name="projSel">'+ projOptionStr+'</select>';
-	    	    
-	    	   
-	    	    
-	      		editableRow+='<td>'+formGroupDiv +projSelectStr+divEnding+'</td>';   
-	      		editableRow+='<td>'+formGroupDiv +fundingSelStr+divEnding+'</td>';   
-	      		
+		
 	      		if(isAdmin){
-		      		editableRow+='<td>'+formGroupDiv +'<input type="text" name="staffIP" class="staffIP form-control txt-auto width_100Per" placeholder="Staff Name" required />'+divEnding+'</td>';
 		      		editableRow+='<td>'+formGroupDiv +'<input type="file" class="signedOfferExistAppt btn btn-primary" title="Choose the signed offer letter" style="width:95%;">'+divEnding+'</td>';     	
 		      		editableRow+='<td>'+formGroupDiv +'<button type="button" title="Import Existing Appointment" class="submitExistAppt btn btn-success pull-right" onclick="addNewAppointment($(this))">Import</button>'+divEnding+'</td>';     	
 		      		editableRow+='<td>'+formGroupDiv +'<button type="button" class="closeAppmntRow btn btn-success pull-left" onclick="closeAppmntRow($(this))">close</button>'+divEnding+'</td></tr>';     	
@@ -1298,7 +1318,7 @@ function addNewAppointment(buttonClicked){
 			projId= curRowParent.find(".projSel").val().split("-")[1];
 			
 			if(  curRowParent.find(".projSel").val().split("-")[1]!= "0"){
-				projectConfirmStr = " on a Project "+projIp.toUpperCase();
+				projectConfirmStr = " on a Budget Code "+projIp.toUpperCase();
 			}			
 		}
 	 data["projIP"]= projIp.toUpperCase();

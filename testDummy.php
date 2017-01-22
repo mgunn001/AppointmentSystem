@@ -80,7 +80,7 @@
 	
 	 if (TRUE === ldap_bind($ldap_connection, $ldap_username, $ldap_password)){
 	
-	  $ldap_dn = "DC=cs,DC=odu,DC=edu";
+	  $ldap_dn = "OU=Grad,OU=students,DC=cs,DC=odu,DC=edu";
 	 
 	  $attr = array("givenname","sn","extensionAttribute1", "employeeNumber", "mail","memberof");		
 	 }
@@ -96,11 +96,10 @@
 
  	}
 	
- 	//$filter= "(employeeNumber=00896342)";
+ 	//$filter= "(employeeNumber=01072471)";
   //$filter = $filterStr;
- $person = "Sabbir";
- 
-  $filter="(|(sn=$person*)(givenname=$person*))";
+$person = "Mahee";
+$filter="(|(sn=$person*)(givenname=$person*))";
   
   $result = ldap_search($ldap_connection, $ldap_dn, $filter, $attr) or exit("Unable to search LDAP server");
   //echo "After LDap Search";
